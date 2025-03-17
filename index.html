@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criador de Gráficos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Adicionando a CDN do Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center h-screen bg-gray-100">
+    <div class="w-full max-w-4xl p-4">
+        <!-- Ajuste para canvas flexível -->
+        <canvas id="meuGrafico" class="w-full" style="max-height: 500px;"></canvas>
+    </div>
+
+    <script>
+        // Função para pegar parâmetros da URL
+        function getParamsFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const data = {};
+            const type = params.get('type') || 'bar'; // Tipo de gráfico padrão é 'bar'
+
+            params.forEach((value, key) => {
+                if (key !== 'type') {
+                    data[key] = parseFloat(value);
+                }
+            });
+
+            return { data, type };
+        }
+
+        // Função para criar o gráfico
+        function createChart(data, type) {
+            const ctx = document.getElementById('meuGrafico').getContext('2d');
+            const labels = Object.keys(data);
+            const values = Object.values(data);
+
+            // Ajuste dinâmico para gráficos de "pie" e "doughnut"
+            const chartOptions = {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Valores',
+                        data: values,
+                        backgroundColor: [
+                            'rgba(255, 99, 132,0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(255, 159, 64, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,  // Permite o gráfico se ajustar dinamicamente
+                    maintainAspectRatio: false,  // Impede a manutenção de uma proporção fixa
+                    plugins: {
+                        legend: {
+                            position: 'top',  // Posição da legenda
+                        }
+                    }
+                }
+            };
+
+            new Chart(ctx, chartOptions);
+        }
+
+        // Pegar parâmetros da URL e criar o gráfico
+        const { data, type } = getParamsFromURL();
+        createChart(data, type);
+    </script>
+</body>
+</html>
